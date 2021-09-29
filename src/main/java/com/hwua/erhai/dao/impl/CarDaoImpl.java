@@ -3,10 +3,12 @@ package com.hwua.erhai.dao.impl;
 import com.hwua.erhai.dao.ICarDao;
 import com.hwua.erhai.entity.Car;
 import com.hwua.erhai.jdbc.JDBCTemplate;
+import com.hwua.erhai.jdbc.PreparedStatementSetter;
 import com.hwua.erhai.jdbc.ResultSetHandler;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -115,8 +117,13 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
                 +"where car.brand_id = b.id AND car.category_id = cay.id "
                 +"and car.category_id = ?"
                 ;
+        query(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement pstmt) throws SQLException {
+                pstmt.setInt(1,categoryId);
+            }
+        }, new ResultSetHandler() {
 
-        query(sql, null, new ResultSetHandler() {
             @Override
             public void handleRs(ResultSet rs) throws SQLException {
                 while (rs.next()) {
@@ -133,9 +140,10 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
                             rs.getInt(10));
                     list.add(car);
                 }
+
             }
         });
-        return list;
+         return list;
     }
 
     @Override
