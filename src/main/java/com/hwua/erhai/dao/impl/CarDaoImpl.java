@@ -107,7 +107,33 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
 
     @Override
     public List<Car> queryCarsByCategoryId(final int categoryId) {
-        throw new NotImplementedException();
+
+        final List<Car> list = new ArrayList<>();
+        String sql = "SELECT car.id, b.id, b.name, car.model, cay.id, cay.name,"
+                + "car.t_comments, car.rent,car.status, car.usable "
+                + "FROM t_car car, t_brand b, t_category cay "
+                + "WHERE car.brand_id = b.id AND car.category_id = cay.id "
+                + "ORDER BY car.id DESC";
+        query(sql, null, new ResultSetHandler() {
+            @Override
+            public void handleRs(ResultSet rs) throws SQLException {
+                while (rs.next()) {
+                    Car car = new Car(
+                            rs.getLong(1),
+                            rs.getInt(2),
+                            rs.getString(3),
+                            rs.getString(4),
+                            rs.getInt(5),
+                            rs.getString(6),
+                            rs.getString(7),
+                            rs.getDouble(8),
+                            rs.getInt(9),
+                            rs.getInt(10));
+                    list.add(car);
+                }
+            }
+        });
+        return list;
     }
 
     @Override
