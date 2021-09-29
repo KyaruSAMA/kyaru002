@@ -145,7 +145,7 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
         });
          return list;
     }
-
+// todo
     @Override
     public List<Car> queryCarsByBrandId(final int brandId) {
         throw new NotImplementedException();
