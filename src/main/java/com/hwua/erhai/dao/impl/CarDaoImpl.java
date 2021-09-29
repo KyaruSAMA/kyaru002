@@ -117,7 +117,6 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
                 +"where car.brand_id = b.id AND car.category_id = cay.id "
                 +"and car.category_id = ?"
                 ;
-<<<<<<< HEAD
         query(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement pstmt) throws SQLException {
@@ -125,10 +124,6 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
             }
         }, new ResultSetHandler() {
 
-=======
-
-        query(sql, null, new ResultSetHandler() {
->>>>>>> 6fb05ac (todo categoryID)
             @Override
             public void handleRs(ResultSet rs) throws SQLException {
                 while (rs.next()) {
@@ -150,30 +145,136 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
         });
          return list;
     }
-
+// todo
     @Override
     public List<Car> queryCarsByBrandId(final int brandId) {
-        throw new NotImplementedException();
+        final List<Car> list = new ArrayList<>();
+        String sql = "SELECT car.id, b.id, b.name, car.model, cay.id, cay.name,"
+                + "car.t_comments, car.rent,car.status, car.usable "
+                + "FROM t_car car, t_brand b, t_category cay "
+                +"where car.brand_id = b.id AND car.category_id = cay.id "
+                +"and car.BrandId = ?"
+                ;
+        query(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement pstmt) throws SQLException {
+                pstmt.setInt(1,brandId);
+            }
+        }, new ResultSetHandler() {
+
+            @Override
+            public void handleRs(ResultSet rs) throws SQLException {
+                while (rs.next()) {
+                    Car car = new Car(
+                            rs.getLong(1),
+                            rs.getInt(2),
+                            rs.getString(3),
+                            rs.getString(4),
+                            rs.getInt(5),
+                            rs.getString(6),
+                            rs.getString(7),
+                            rs.getDouble(8),
+                            rs.getInt(9),
+                            rs.getInt(10));
+                    list.add(car);
+                }
+
+            }
+        });
+        return list;
     }
 
     @Override
     public Car queryCarById(Connection conn, final long id) {
-        throw new NotImplementedException();
+        Car car = null;
+        String sql = "SELECT car.id, b.id, b.name, car.model, cay.id, cay.name,"
+                + "car.t_comments, car.rent,car.status, car.usable "
+                + "FROM t_car car, t_brand b, t_category cay "
+                +"where car.brand_id = b.id AND car.category_id = cay.id "
+                +"and car.id = ?"
+                ;
+        query(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement pstmt) throws SQLException {
+                pstmt.setLong(1,id);
+            }
+        }, new ResultSetHandler() {
+
+            @Override
+            public void handleRs(ResultSet rs) throws SQLException {
+                while (rs.next()) {
+                           car.setId(rs.getLong(1));
+                           car.setBrandId(rs.getInt(2));
+                           car.setBrandName(rs.getString(3));
+                           car.setModel( rs.getString(4));
+                           car.setCategoryId( rs.getInt(5));
+                           car.setCategoryName(rs.getString(6));
+                           car.setComments(rs.getString(7));
+                           car.setRent(rs.getDouble(8));
+                           car.setStatus(rs.getInt(9));
+                           car.setUsable(rs.getInt(10));
+
+                }
+
+            }
+        });
+        return car;
     }
 
     @Override
     public int updateCar(Connection conn, final long id, final int status, final int beforeStatus) {
-        throw new NotImplementedException();
+        String sql = "update testdb001.t_car set  car.status =? where car.id =?";
+        update(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement pstmt) throws SQLException {
+                pstmt.setInt(1,status);
+                pstmt.setLong(2,id);
+            }
+        });
+        return  1;
     }
 
     @Override
     public List<Car> queryCarById(final long id) {
-        throw new NotImplementedException();
+        final List<Car> list = new ArrayList<>();
+        String sql = "SELECT car.id, b.id, b.name, car.model, cay.id, cay.name,"
+                + "car.t_comments, car.rent,car.status, car.usable "
+                + "FROM t_car car, t_brand b, t_category cay "
+                +"where car.brand_id = b.id AND car.category_id = cay.id "
+                +"and car.Id = ?"
+                ;
+        query(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement pstmt) throws SQLException {
+                pstmt.setLong(1,id);
+            }
+        }, new ResultSetHandler() {
+
+            @Override
+            public void handleRs(ResultSet rs) throws SQLException {
+                while (rs.next()) {
+                    Car car = new Car(
+                            rs.getLong(1),
+                            rs.getInt(2),
+                            rs.getString(3),
+                            rs.getString(4),
+                            rs.getInt(5),
+                            rs.getString(6),
+                            rs.getString(7),
+                            rs.getDouble(8),
+                            rs.getInt(9),
+                            rs.getInt(10));
+                    list.add(car);
+                }
+
+            }
+        });
+        return list;
     }
 
     @Override
     public int addCar(final Car car) {
-        throw new NotImplementedException();
+
     }
 
     @Override
