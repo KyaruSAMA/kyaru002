@@ -113,7 +113,7 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
                 + "car.t_comments, car.rent,car.status, car.usable "
                 + "FROM t_car car, t_brand b, t_category cay "
                 + "WHERE car.brand_id = b.id AND car.category_id = cay.id "
-                + "ORDER BY car.id DESC";
+                ;
         query(sql, null, new ResultSetHandler() {
             @Override
             public void handleRs(ResultSet rs) throws SQLException {
