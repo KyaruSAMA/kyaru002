@@ -15,7 +15,8 @@ public class UserCarView extends Client {
     }
 
     public void showCar(String[] strings) {
-        // TODO: 需要自行实现代码
+        // TODO: 需要自行实现代码 显示登录后的查询汽车列表
+        System.out.println();
         throw new NotImplementedException();
     }
 }

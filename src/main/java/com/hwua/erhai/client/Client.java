@@ -15,7 +15,7 @@ import java.net.Socket;
  * @author Alain
  */
 public class Client {
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private Socket socket = null;
     private BufferedReader brSocket;
