@@ -117,6 +117,7 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
                 +"where car.brand_id = b.id AND car.category_id = cay.id "
                 +"and car.category_id = ?"
                 ;
+<<<<<<< HEAD
         query(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement pstmt) throws SQLException {
@@ -124,6 +125,10 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
             }
         }, new ResultSetHandler() {
 
+=======
+
+        query(sql, null, new ResultSetHandler() {
+>>>>>>> 6fb05ac (todo categoryID)
             @Override
             public void handleRs(ResultSet rs) throws SQLException {
                 while (rs.next()) {
