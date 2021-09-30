@@ -223,7 +223,7 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
 
     @Override
     public int updateCar(Connection conn, final long id, final int status, final int beforeStatus) {
-        String sql = "update testdb001.t_car set  car.status =? where car.id =?";
+        String sql = "update t_car set  car.status =? where car.id =?";
         update(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement pstmt) throws SQLException {
@@ -274,6 +274,25 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
 //todo
     @Override
     public int addCar(final Car car) {
+        String sql = "insert into t_car (id,car_number,brand_id,model,color,category_id,t_comments,price,rent,status,usable)"
+                +"values (?,?,?,?,?,?,?,?,?,?,?)";
+      return update(sql, new PreparedStatementSetter() {
+          @Override
+          public void setValues(PreparedStatement pstmt) throws SQLException {
+              pstmt.setLong(1,car.getId());
+              pstmt.setString(2,car.getCarNumber());
+              pstmt.setInt(3,car.getBrandId());
+              pstmt.setString(4,car.getModel());
+              pstmt.setString(5,car.getColor());
+              pstmt.setInt(6,car.getCategoryId());
+              pstmt.setString(7,car.getComments());
+              pstmt.setDouble(8,car.getPrice());
+              pstmt.setDouble(9,car.getRent());
+              pstmt.setInt(10,car.getStatus());
+              pstmt.setInt(11,car.getUsable());
+
+          }
+      });
 
     }
 
