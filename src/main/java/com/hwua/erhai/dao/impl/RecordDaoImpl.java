@@ -1,13 +1,17 @@
 package com.hwua.erhai.dao.impl;
 
 import com.hwua.erhai.dao.IRecordDao;
+import com.hwua.erhai.entity.Car;
 import com.hwua.erhai.entity.Record;
 import com.hwua.erhai.jdbc.DBUtil;
 import com.hwua.erhai.jdbc.JDBCTemplate;
+import com.hwua.erhai.jdbc.PreparedStatementSetter;
+import com.hwua.erhai.jdbc.ResultSetHandler;
 import com.hwua.erhai.util.Util;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecordDaoImpl extends JDBCTemplate implements IRecordDao {
@@ -44,12 +48,60 @@ public class RecordDaoImpl extends JDBCTemplate implements IRecordDao {
 
     @Override
     public int updateRecord(Connection conn, final long recordId, final String returnTime, final double payment) {
-        throw new NotImplementedException();
+        PreparedStatement pstmt = null;
+
+        long id;
+        String sql = "update t_record set id = ?,returnTime=?,payment=?";
+        try {
+            // 执行SQL语句
+            pstmt = conn.prepareStatement(
+                    sql, Statement.RETURN_GENERATED_KEYS);
+            pstmt.setLong(1, recordId);
+            pstmt.setString(2, Util.today());
+            pstmt.setDouble(3, payment);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(String.format("failed to execute sql[%s]", sql), e);
+        } finally {
+            DBUtil.close( pstmt);
+        }
+
+        // 返回的id是新增记录的主键
+        return 1;
     }
 
     @Override
     public List<Record> queryRecordsByUserId(final long userId) {
-        throw new NotImplementedException();
+        Record record = new Record();
+        final List<Record> list = new ArrayList<>();
+        long id;
+        String sql = "select recordId from t_record where userId = ?";
+        try {
+            query(sql, new PreparedStatementSetter() {
+                @Override
+                public void setValues(PreparedStatement pstmt) throws SQLException {
+                    pstmt.setLong(1,userId);
+                }
+            }, new ResultSetHandler() {
+                @Override
+                public void handleRs(ResultSet rs) throws SQLException {
+                    while (rs.next()) {
+                        Record record = new Record(
+                                rs.getLong(1)
+
+                        );
+                                list.add(record);
+                    }
+
+                }
+            });
+        } finally {
+            DBUtil.close(pstmt);
+        }
+
+        // 返回的id是新增记录的主键
+        return 1;
     }
 
     @Override
