@@ -9,7 +9,9 @@ public class RentCarRequest extends Request {
         this.userId = userId;
         this.carId = carId;
     }
+    public RentCarRequest(){
 
+    }
     public int getUserId() {
         return userId;
     }

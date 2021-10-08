@@ -12,6 +12,10 @@ public class LoginRequest extends Request {
         this.type = type;
     }
 
+    public LoginRequest() {
+
+    }
+
     public String getUsername() {
         return username;
     }

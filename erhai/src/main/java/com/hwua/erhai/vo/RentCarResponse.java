@@ -9,7 +9,9 @@ public class RentCarResponse extends Response {
         super(code, msg);
         this.record = record;
     }
+    public RentCarResponse(){
 
+    }
     public Record getRecord() {
         return record;
     }

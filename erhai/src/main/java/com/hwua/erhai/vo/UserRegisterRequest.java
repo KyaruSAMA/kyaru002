@@ -19,7 +19,9 @@ public class UserRegisterRequest extends Request {
         this.addr = addr;
         this.type = type;
     }
+    public UserRegisterRequest(){
 
+    }
     public String getUsername() {
         return username;
     }

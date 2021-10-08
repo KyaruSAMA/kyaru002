@@ -11,7 +11,9 @@ public class UserRegisterResponse extends Response {
         super(code, msg);
         this.user = user;
     }
+    public UserRegisterResponse(){
 
+    }
     public User getUser() {
         return user;
     }

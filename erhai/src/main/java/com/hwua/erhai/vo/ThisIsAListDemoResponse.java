@@ -14,7 +14,9 @@ public class ThisIsAListDemoResponse extends Response {
         super(code, msg);
         this.cars = cars;
     }
+    public ThisIsAListDemoResponse(){
 
+    }
     public List<Car> getCars() {
         return cars;
     }

@@ -11,7 +11,9 @@ public class UserQueryCarsRequest extends Request{
         this.name = name;
         this.type = type;
     }
+    public UserQueryCarsRequest(){
 
+    }
     public String getId() {
         return id;
     }
