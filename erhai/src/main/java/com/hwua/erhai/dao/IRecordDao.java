@@ -67,4 +67,6 @@ public interface IRecordDao {
      * @return 租赁记录集合
      */
     List<Record> queryRecordsByCarId(long carId);
+
+
 }

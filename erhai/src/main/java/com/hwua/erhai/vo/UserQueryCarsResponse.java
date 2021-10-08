@@ -3,23 +3,25 @@ package com.hwua.erhai.vo;
 import com.hwua.erhai.entity.Car;
 import com.hwua.erhai.entity.User;
 
-public class UserQueryCarsResponse extends Response{
-    private Car car;
+import java.util.List;
+
+public class UserQueryCarsResponse extends Response {
+    private List<Car> cars;
 
     public UserQueryCarsResponse() {
 
     }
 
-    public UserQueryCarsResponse(int code, String msg, Car car) {
+    public UserQueryCarsResponse(int code, String msg, List<Car> cars) {
         super(code, msg);
-        this.car = car;
+        this.cars = cars;
     }
 
-    public Car getCar() {
-        return car;
+    public List<Car> getCars() {
+        return cars;
     }
 
-    public void setCar(Car car) {
-        this.car = car;
+    public void setCars(List<Car> cars) {
+        this.cars = cars;
     }
 }

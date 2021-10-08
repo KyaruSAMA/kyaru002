@@ -1,11 +1,12 @@
 package com.hwua.erhai.vo;
 
-public class UserQueryCarsRequest {
+public class UserQueryCarsRequest extends Request{
     private String id;
     public String name;
     private  String type;//type=1是价格降序，type=2是价格升序，type=3查询全部
 
-    public UserQueryCarsRequest(String id, String name, String type) {
+    public UserQueryCarsRequest(String requestType,String id, String name, String type) {
+        super(requestType);
         this.id = id;
         this.name = name;
         this.type = type;

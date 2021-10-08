@@ -135,7 +135,7 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
             cars=carService.queryCars(userQueryCarsRequest.getId());
         }
         if (cars ==null){
-         return new UserQueryCarsResponse(400,"查询汽车失败",null);
+            return new UserQueryCarsResponse(400,"查询汽车失败",null);
         }else {
             return new UserQueryCarsResponse(200,"查询汽车成功", cars);
         }

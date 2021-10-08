@@ -15,10 +15,12 @@ import com.hwua.erhai.entity.Record;
 import com.hwua.erhai.jdbc.ConnectionFactory;
 import com.hwua.erhai.jdbc.DBUtil;
 import com.hwua.erhai.service.ICarService;
+import com.hwua.erhai.util.Util;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CarServiceImpl implements ICarService {
@@ -29,16 +31,58 @@ public class CarServiceImpl implements ICarService {
 
     @Override
     public List<Car> queryUsableCars(String type, String value) {
-        throw new NotImplementedException();
+
+        List<Car> cars=null;
+        if ("1".equals(type)){
+            cars=carDao.queryUsableCarsByPriceDesc();
+        }
+        else if ("2".equals(type)){
+            cars=carDao.queryUsableCarsByPriceAsc();
+        }
+        else if ("3".equals(type)){
+            cars = carDao.queryAllUsableCars();
+        }else{
+            throw new UnsupportedOperationException(String.format("unsupported type [%s]",type));
+        }
+
+        return cars;
     }
 
     public List<Car> queryCars(String type, String value) {
-        throw new NotImplementedException();
+
+        List<Car> cars=null;
+        if ("1".equals(type)){
+            cars=carDao.queryCarsByPriceDesc();
+        }
+        else if ("2".equals(type)){
+            cars=carDao.queryCarsByPriceAsc();
+        }
+        else if ("3".equals(type)){
+            cars = carDao.queryAllCars();
+        }else{
+            throw new UnsupportedOperationException(String.format("unsupported type [%s]",type));
+        }
+
+        return cars;
     }
 
     @Override
     public List<Car> queryCars(String type) {
-        throw new NotImplementedException();
+
+        List<Car> cars=null;
+        if ("1".equals(type)){
+            cars=carDao.queryCarsByPriceDesc();
+        }
+        else if ("2".equals(type)){
+            cars=carDao.queryCarsByPriceAsc();
+        }
+        else if ("3".equals(type)){
+            cars = carDao.queryAllCars();
+        }else{
+            throw new UnsupportedOperationException(String.format("unsupported type [%s]",type));
+        }
+
+        return cars;
     }
     @Override
     public Record rentCar(long userId, long carId) {
@@ -82,22 +126,73 @@ public class CarServiceImpl implements ICarService {
 
     @Override
     public Record returnCar(long userId, long carId) {
-        throw new NotImplementedException();
+        Connection conn = ConnectionFactory.getConnection();
+        Record record = null;
+        long id;
+        try {
+            // 一次成功的租车，涉及修改汽车表和租车记录表这两张独立的表，
+            // 所以需要启动事务来保证要么两者同时修改成功，要么两者同时不做修改（也就是失败后回滚）
+            // 启动本次连接的事务功能
+            conn.setAutoCommit(false);
+            // 查询当前汽车是否可租赁
+
+
+                // 如果可以租赁，修改汽车表
+
+                    id = recordDao.updateRecord(conn,record.getId(), Util.today(), record.getPayment());
+                    record = recordDao.queryRecordById(conn, id);
+
+
+            // 提交事务
+            conn.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                // 如果修改汽车表和租车记录表时发生异常，就回滚事务
+                conn.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        } finally {
+            // 关闭连接
+            DBUtil.close(conn);
+        }
+        return record;
     }
 
     @Override
     public List<Record> queryRecords(String type, String value) {
-        throw new NotImplementedException();
+        Record record = new Record();
+        List<Record> records=null;
+        if ("1".equals(type)){
+            records=recordDao.queryRecordsByUserId(record.getUserId());
+        }
+        else if ("2".equals(type)){
+            records=recordDao.queryRecordsByCarId(record.getCarId());
+        }
+        else if ("3".equals(type)){
+            records = recordDao.queryAllRecords();
+        }else{
+            throw new UnsupportedOperationException(String.format("unsupported type [%s]",type));
+        }
+
+        return records;
     }
 
     @Override
     public List<Category> queryAllCategories() {
-        throw new NotImplementedException();
+
+        List<Category> list=null;
+        list=categoryDao.queryAllCategories();
+        return list;
     }
 
     @Override
     public List<Brand> queryAllBrands() {
-        throw new NotImplementedException();
+
+        List<Brand> list =null;
+        list=brandDao.queryAllBrand();
+        return list;
     }
 
     @Override
