@@ -197,12 +197,52 @@ public class CarServiceImpl implements ICarService {
 
     @Override
     public boolean addCar(Car car) {
-        throw new NotImplementedException();
+       int b =carDao.addCar(car);
+       if (b!=0){
+           return true;
+       }else
+       {
+           return  false;
+       }
+
     }
 
     @Override
     public Car updateCar(String type, String value, long carId) {
-        throw new NotImplementedException();
+        Connection conn = ConnectionFactory.getConnection();
+        Car car =null;
+        try {
+         if ("1".equals(type)){
+          int rows =carDao.updateCar(conn,carId,Integer.parseInt(value),0);
+          if (rows ==1 ){
+              car=carDao.queryCarById(conn,carId);
+          }else {
+              throw new Exception(String.format("carDao.updateCar failed,carId[%s]",carId));
+          }
+         }
+         else if ("2".equals(type)){
+             int rows =carDao.updateCanLendCarRentById(carId,Double.parseDouble(value));
+             if (rows==1){
+                 car=carDao.queryCarById(conn ,carId);
+             }else {
+                 throw new Exception(String.format("carDao.updateCar failed,carId[%s]",carId));
+             }
+         }else if ("3".equals(type)){
+          int rows =carDao.updateCanLendCarUsableById(carId,Integer.parseInt(value));
+          if (rows==1){
+              car=carDao.queryCarById(conn,carId);
+          }else {
+              throw new Exception(String.format("carDao.updateCar failed,carId[%s]",carId));
+          }
+         }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        } finally {
+            // 关闭连接
+            DBUtil.close(conn);
+        }
+        return car;
     }
 
 
