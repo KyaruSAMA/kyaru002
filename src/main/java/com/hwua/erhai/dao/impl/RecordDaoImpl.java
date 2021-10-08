@@ -51,14 +51,14 @@ public class RecordDaoImpl extends JDBCTemplate implements IRecordDao {
         PreparedStatement pstmt = null;
 
         long id;
-        String sql = "update t_record set id = ?,returnTime=?,payment=?";
+        String sql = "update t_record set return_date=?,payment=? where id = ?";
         try {
             // 执行SQL语句
             pstmt = conn.prepareStatement(
                     sql, Statement.RETURN_GENERATED_KEYS);
-            pstmt.setLong(1, recordId);
-            pstmt.setString(2, Util.today());
-            pstmt.setDouble(3, payment);
+            pstmt.setLong(3, recordId);
+            pstmt.setString(1, Util.today());
+            pstmt.setDouble(2, payment);
             pstmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -73,11 +73,10 @@ public class RecordDaoImpl extends JDBCTemplate implements IRecordDao {
 
     @Override
     public List<Record> queryRecordsByUserId(final long userId) {
-        Record record = new Record();
+
         final List<Record> list = new ArrayList<>();
-        long id;
-        String sql = "select recordId from t_record where userId = ?";
-        try {
+        String sql = "select Id,user_id,car_id,start_date,return_date,payment from t_record where user_Id = ?";
+
             query(sql, new PreparedStatementSetter() {
                 @Override
                 public void setValues(PreparedStatement pstmt) throws SQLException {
@@ -88,7 +87,12 @@ public class RecordDaoImpl extends JDBCTemplate implements IRecordDao {
                 public void handleRs(ResultSet rs) throws SQLException {
                     while (rs.next()) {
                         Record record = new Record(
-                                rs.getLong(1)
+                                rs.getLong(1),
+                                rs.getLong(2),
+                                rs.getLong(3),
+                                rs.getString(4),
+                                rs.getString(5),
+                                rs.getDouble(6)
 
                         );
                                 list.add(record);
@@ -96,32 +100,133 @@ public class RecordDaoImpl extends JDBCTemplate implements IRecordDao {
 
                 }
             });
-        } finally {
-            DBUtil.close(pstmt);
-        }
 
-        // 返回的id是新增记录的主键
-        return 1;
+
+        return list;
     }
 
     @Override
     public Record queryRecordById(Connection conn, final long id) {
-        throw new NotImplementedException();
+        Record record = new Record();
+        String sql = "select Id,user_id,car_id,start_date,return_date,payment from t_record where user_Id = ?";
+
+        query(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement pstmt) throws SQLException {
+                pstmt.setLong(1,id);
+            }
+        }, new ResultSetHandler() {
+            @Override
+            public void handleRs(ResultSet rs) throws SQLException {
+                while (rs.next()) {
+                    record.setId(rs.getLong(1));
+                    record.setUserId(rs.getLong(2));
+                    record.setCarId(rs.getLong(3));
+                    record.setStartDate(rs.getString(4));
+                    record.setReturnDate(rs.getString(5));
+                    record.setPayment(rs.getDouble(6));
+                }
+
+            }
+        });
+
+
+        return record;
     }
 
     @Override
     public Record queryNotReturnRecord(Connection conn, final long userId, final long carId) {
-        throw new NotImplementedException();
+        Record record = new Record();
+        String sql = "select Id,user_id,car_id,start_date,return_date,payment from t_record where (user_Id = ? or car_id = ?) and return_date is null ";
+
+        query(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement pstmt) throws SQLException {
+                pstmt.setLong(1,userId);
+                pstmt.setLong(2,carId);
+            }
+        }, new ResultSetHandler() {
+            @Override
+            public void handleRs(ResultSet rs) throws SQLException {
+                while (rs.next()) {
+                    record.setId(rs.getLong(1));
+                    record.setUserId(rs.getLong(2));
+                    record.setCarId(rs.getLong(3));
+                    record.setStartDate(rs.getString(4));
+                    record.setReturnDate(rs.getString(5));
+                    record.setPayment(rs.getDouble(6));
+
+
+
+                }
+
+            }
+        });
+
+
+        return record;
     }
 
     @Override
     public List<Record> queryAllRecords() {
-        throw new NotImplementedException();
+        final List<Record> list = new ArrayList<>();
+        String sql = "select Id,user_id,car_id,start_date,return_date,payment from t_record ";
+
+        query(sql, null,
+         new ResultSetHandler() {
+            @Override
+            public void handleRs(ResultSet rs) throws SQLException {
+                while (rs.next()) {
+                    Record record = new Record(
+                            rs.getLong(1),
+                            rs.getLong(2),
+                            rs.getLong(3),
+                            rs.getString(4),
+                            rs.getString(5),
+                            rs.getDouble(6)
+
+                    );
+                    list.add(record);
+                }
+
+            }
+        });
+
+
+        return list;
     }
 
     @Override
     public List<Record> queryRecordsByCarId(final long carId) {
-        throw new NotImplementedException();
+        final List<Record> list = new ArrayList<>();
+        String sql = "select Id,user_id,car_id,start_date,return_date,payment from t_record where car_Id = ?";
+
+        query(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement pstmt) throws SQLException {
+                pstmt.setLong(1,carId);
+            }
+        }, new ResultSetHandler() {
+            @Override
+            public void handleRs(ResultSet rs) throws SQLException {
+                while (rs.next()) {
+                    Record record = new Record(
+                            rs.getLong(1),
+                            rs.getLong(2),
+                            rs.getLong(3),
+                            rs.getString(4),
+                            rs.getString(5),
+                            rs.getDouble(6)
+
+                    );
+                    list.add(record);
+                }
+
+            }
+        });
+
+
+        return list;
     }
 
 }

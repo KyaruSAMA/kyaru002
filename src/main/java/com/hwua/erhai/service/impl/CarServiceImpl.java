@@ -37,6 +37,10 @@ public class CarServiceImpl implements ICarService {
     }
 
     @Override
+    public List<Car> queryCars(String type) {
+        throw new NotImplementedException();
+    }
+    @Override
     public Record rentCar(long userId, long carId) {
         Connection conn = ConnectionFactory.getConnection();
         Record record = null;
@@ -105,4 +109,8 @@ public class CarServiceImpl implements ICarService {
     public Car updateCar(String type, String value, long carId) {
         throw new NotImplementedException();
     }
+
+
+
+
 }

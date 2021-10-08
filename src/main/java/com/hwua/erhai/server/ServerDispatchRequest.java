@@ -1,5 +1,6 @@
 package com.hwua.erhai.server;
 
+import com.hwua.erhai.entity.Car;
 import com.hwua.erhai.entity.Record;
 import com.hwua.erhai.entity.User;
 import com.hwua.erhai.service.ICarService;
@@ -11,7 +12,9 @@ import com.hwua.erhai.util.JsonUtil;
 import com.hwua.erhai.vo.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import javax.swing.*;
 import java.net.Socket;
+import java.util.List;
 
 public class ServerDispatchRequest extends DispatchRequestRunnable {
     private final IUserService userService = new UserServiceImpl();
@@ -119,7 +122,22 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
      * @return 响应内容
      */
     private Response dispatchUserQueryCars(String request) {
-        throw new NotImplementedException();
+        UserQueryCarsRequest userQueryCarsRequest =JsonUtil.fromJson(request,UserQueryCarsRequest.class);
+        List<Car> cars =null;
+        if ("1".equals(userQueryCarsRequest.getType())){
+            cars =carService.queryCars("1");
+        }else if ("2".equals(userQueryCarsRequest.getType())){
+            cars=carService.queryCars("2");
+        }else if ("3".equals(userQueryCarsRequest.getType())){
+            cars=carService.queryCars("3");
+        }else if ("4".equals(userQueryCarsRequest.getType())){
+            cars=carService.queryCars(userQueryCarsRequest.getId());
+        }
+        if (cars ==null){
+         return new UserQueryCarsResponse(400,"查询汽车失败",null);
+        }else {
+            return new UserQueryCarsResponse(200,"查询汽车成功", cars);
+        }
     }
 
     /**

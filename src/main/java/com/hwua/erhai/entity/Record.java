@@ -60,6 +60,16 @@ public class Record {
         this.userName = userName;
     }
 
+    public Record(long id, long userId, long carId, String startDate, String returnDate, double payment) {
+        super();
+        this.id = id;
+        this.userId = userId;
+        this.carId = carId;
+        this.startDate = startDate;
+        this.returnDate = returnDate;
+        this.payment = payment;
+    }
+
     public long getId() {
         return id;
     }
