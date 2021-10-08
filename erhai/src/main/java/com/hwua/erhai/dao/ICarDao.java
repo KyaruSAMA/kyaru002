@@ -11,6 +11,7 @@ public interface ICarDao {
      *
      * @return 汽车的集合
      */
+//s
     List<Car> queryAllCars();
 
     /**
