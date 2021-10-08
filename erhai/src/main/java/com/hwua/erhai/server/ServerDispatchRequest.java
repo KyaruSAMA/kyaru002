@@ -148,7 +148,22 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
      * @return 响应内容
      */
     private Response dispatchAdminQueryCars(String request) {
-        throw new NotImplementedException();
+        AdminQueryCarsRequest adminQueryCarsRequest =JsonUtil.fromJson(request,AdminQueryCarsRequest.class);
+        List<Car> cars =null;
+        if ("1".equals(adminQueryCarsRequest.getType())){
+            cars =carService.queryCars("1");
+        }else if ("2".equals(adminQueryCarsRequest.getType())){
+            cars=carService.queryCars("2");
+        }else if ("3".equals(adminQueryCarsRequest.getType())){
+            cars=carService.queryCars("3");
+        }else if ("4".equals(adminQueryCarsRequest.getType())){
+            cars=carService.queryCars(adminQueryCarsRequest.getId());
+        }
+        if (cars ==null){
+            return new AdminQueryCarsResponse(400,"查询汽车失败",null);
+        }else {
+            return new AdminQueryCarsResponse(200,"查询汽车成功", cars);
+        }
     }
 
     /**
@@ -177,7 +192,15 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
      * @return
      */
     private Response dispatchReturnCar(String request) {
-        throw new NotImplementedException();
+        ReturnCarRequest rentRequest = JsonUtil.fromJson(request, ReturnCarRequest.class);
+        Record record = carService.returnCar(rentRequest.getCarId(), rentRequest.getUserId());
+        if (record != null) {
+            // code = 200 表示成功
+            return new ReturnCarResponse(200, "租车成功", record);
+        } else {
+            // code = 400 表示失败
+            return new ReturnCarResponse(400, "租车失败", null);
+        }
     }
 
     /**
