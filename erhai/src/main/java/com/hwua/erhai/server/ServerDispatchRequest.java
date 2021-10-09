@@ -1,8 +1,7 @@
 package com.hwua.erhai.server;
 
-import com.hwua.erhai.entity.Car;
-import com.hwua.erhai.entity.Record;
-import com.hwua.erhai.entity.User;
+import com.hwua.erhai.dao.impl.CarDaoImpl;
+import com.hwua.erhai.entity.*;
 import com.hwua.erhai.service.ICarService;
 import com.hwua.erhai.service.IUserService;
 import com.hwua.erhai.service.impl.CarServiceImpl;
@@ -193,7 +192,7 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
      */
     private Response dispatchReturnCar(String request) {
         ReturnCarRequest rentRequest = JsonUtil.fromJson(request, ReturnCarRequest.class);
-        Record record = carService.returnCar(rentRequest.getCarId(), rentRequest.getUserId());
+        Record record = carService.returnCar(rentRequest.getUserId(), rentRequest.getCarId());
         if (record != null) {
             // code = 200 表示成功
             return new ReturnCarResponse(200, "租车成功", record);
@@ -210,7 +209,22 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
      * @return
      */
     private Response dispatchQueryRecords(String request) {
-        throw new NotImplementedException();
+        QueryRecordsRequest queryRecordsRequest=JsonUtil.fromJson(request,QueryRecordsRequest.class);
+        List<Record>records=null;
+        if ("1".equals(queryRecordsRequest.getType())){
+            records =carService.queryRecords("1");
+        }else if ("2".equals(queryRecordsRequest.getType())){
+            records=carService.queryRecords("2");
+        }else if ("3".equals(queryRecordsRequest.getType())){
+            records=carService.queryRecords("3");
+        }else if ("4".equals(queryRecordsRequest.getType())){
+            records=carService.queryRecords(queryRecordsRequest.getId());
+        }
+        if (records ==null){
+            return new QueryRecordsResponse(400,"查询汽车失败",null);
+        }else {
+            return new QueryRecordsResponse(200,"查询汽车成功", records);
+        }
     }
 
     /**
@@ -220,7 +234,15 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
      * @return
      */
     private Response dispatchQueryCategories(String request) {
-        throw new NotImplementedException();
+       QueryCategoriesRequest queryCategoriesRequest=JsonUtil.fromJson(request,QueryCategoriesRequest.class);
+       List<Category>categories=null;
+       categories=carService.queryAllCategories();
+       if (categories==null){
+           return new QueryCategoriesResponese(400,"查询类别失败",null);
+       }
+       else {
+           return new QueryCategoriesResponese(200,"查询类别成功",categories);
+       }
     }
 
     /**
@@ -230,7 +252,15 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
      * @return
      */
     private Response dispatchQueryBrands(String request) {
-        throw new NotImplementedException();
+        QueryBrandsRequest queryBrandsRequest=JsonUtil.fromJson(request,QueryBrandsRequest.class);
+        List<Brand>brands=null;
+        brands=carService.queryAllBrands();
+        if (brands==null){
+            return new QueryBrandsResponse(400,"查询品牌失败",null);
+        }
+        else {
+            return new QueryBrandsResponse(400,"查询品牌成功",brands);
+        }
     }
 
     /**
@@ -240,7 +270,10 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
      * @return
      */
     private Response dispatchAddCar(String request) {
-        throw new NotImplementedException();
+       AddCarRequest addCarRequest=JsonUtil.fromJson(request,AddCarRequest.class);
+       Car car =null;
+
+       boolean addcar=carService.addCar(car);
     }
 
     /**

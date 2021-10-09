@@ -178,7 +178,24 @@ public class CarServiceImpl implements ICarService {
 
         return records;
     }
+    @Override
+    public List<Record> queryRecords(String type) {
+        Record record = new Record();
+        List<Record> records=null;
+        if ("1".equals(type)){
+            records=recordDao.queryRecordsByUserId(record.getUserId());
+        }
+        else if ("2".equals(type)){
+            records=recordDao.queryRecordsByCarId(record.getCarId());
+        }
+        else if ("3".equals(type)){
+            records = recordDao.queryAllRecords();
+        }else{
+            throw new UnsupportedOperationException(String.format("unsupported type [%s]",type));
+        }
 
+        return records;
+    }
     @Override
     public List<Category> queryAllCategories() {
 

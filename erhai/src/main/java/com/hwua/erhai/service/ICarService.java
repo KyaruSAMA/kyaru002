@@ -87,4 +87,8 @@ public interface ICarService {
 
 
     List<Car> queryCars(String type);
+
+    List<Record> queryRecords(String type);
+
+
 }
