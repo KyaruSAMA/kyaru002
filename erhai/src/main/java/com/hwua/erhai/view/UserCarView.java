@@ -23,6 +23,7 @@ public class UserCarView extends Client {
     }
 
     public void showCar(String[] strings) {
+        U
         UserQueryCarsRequest userQueryCarsRequest=null;
         if (strings!=null&&strings.length==1){
             String optionType =strings[0];
@@ -31,10 +32,14 @@ public class UserCarView extends Client {
             }}else if (strings!=null&&strings.length==2){
                 String optionType =strings[0];
                 String orderType = strings[1];
+
                 if ("2".equals(optionType)&&"1".equals(orderType)){
                     userQueryCarsRequest=new UserQueryCarsRequest(Constant.USER_QUERY_CARS,null,null,"1");
                 }else if ("2".equals(optionType)&&"2".equals(orderType)){
                     userQueryCarsRequest=new UserQueryCarsRequest(Constant.USER_QUERY_CARS,null,null,"2");
+                }
+                else if ("3".equals(optionType)&&"1".equals(orderType)){
+                    userQueryCarsRequest=new UserQueryCarsRequest(Constant.USER_QUERY_CARS,null,null,"5");
                 }
 
             }
@@ -45,10 +50,10 @@ public class UserCarView extends Client {
             System.out.println("查询失败");
         }else {
             System.out.println("===============================");
-            System.out.println("编号\t\t汽车名称\t\t备注\t\t品牌\t\t类型\t\t价格\t\t是否可租");
+            System.out.println("编号\t\t\t汽车名称\t\t\t备注\t\t\t品牌\t\t\t类型\t\t\t价格\t\t\t是否可租");
             List<Car> cars= userQueryCarsResponse.getCars();
             for (Car car:cars){
-                System.out.printf("%d\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\t\t%s\n",
+                System.out.printf("%d\t\t\t%s\t\t\t%s\t\t\t%s\t\t\t%s\t\t\t%s\t\t\t%s\n",
                         car.getId(),car.getModel(),car.getComments(),car.getBrandName(),car.getCategoryName(),car.getRent(),
                 car.getStatus()==0?"是":"否");
             }
@@ -66,8 +71,16 @@ public class UserCarView extends Client {
             switch (result){
                 case "0" :
                     System.exit(0);
-                case "1+汽车编号" :
-                    showCar(new String[]{"1","汽车编号"});
+                case "1+2":
+                    showCar(new String[]{"1","2"});
+                case "2+1":
+                    showCar(new String[]{"2","1"});
+                case "2+2":
+                    showCar(new String[]{"2","2"});
+                case "3+1":
+                    showCar(new String[]{"3","1"});
+                case "5":
+                    showCar(new String[]{"5"});
             }
         }
         }

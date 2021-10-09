@@ -57,9 +57,11 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
             case Constant.QUERY_BRANDS: //查询类别和品牌
                 response = dispatchQueryBrands(request);
                 break;
-            case Constant.ADD_CAR: //添加汽车
+   /*       case Constant.ADD_CAR: //添加汽车
                 response = dispatchAddCar(request);
-                break;
+               break;
+*/
+
             case Constant.UPDATE_CAR: //修改汽车
                 response = dispatchUpdateCar(request);
                 break;
@@ -130,7 +132,10 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
             cars=carService.queryCars("2");
         }else if ("3".equals(userQueryCarsRequest.getType())){
             cars=carService.queryCars("3");
-        }else if ("4".equals(userQueryCarsRequest.getType())){
+        }else if ("5".equals(userQueryCarsRequest.getType())){
+            cars=carService.queryCars("5");
+        }
+        else if ("4".equals(userQueryCarsRequest.getType())){
             cars=carService.queryCars(userQueryCarsRequest.getId());
         }
         if (cars ==null){
@@ -269,13 +274,14 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
      * @param request
      * @return
      */
-    private Response dispatchAddCar(String request) {
+  /** private Response dispatchAddCar(String request) {
        AddCarRequest addCarRequest=JsonUtil.fromJson(request,AddCarRequest.class);
        Car car =null;
 
        boolean addcar=carService.addCar(car);
-    }
 
+    }
+*/
     /**
      * 处理修改汽车的值请求
      *

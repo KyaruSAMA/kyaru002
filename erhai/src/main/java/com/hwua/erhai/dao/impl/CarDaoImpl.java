@@ -53,7 +53,7 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
                 + "car.t_comments, car.rent,car.status, car.usable "
                 + "FROM t_car car, t_brand b, t_category cay "
                 + "WHERE car.brand_id = b.id AND car.category_id = cay.id "
-                + "ORDER BY car.price ASC";
+                + "ORDER BY car.rent ASC";
         query(sql, null, new ResultSetHandler() {
             @Override
             public void handleRs(ResultSet rs) throws SQLException {
@@ -84,7 +84,7 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
                 + "car.t_comments, car.rent,car.status, car.usable "
                 + "FROM t_car car, t_brand b, t_category cay "
                 + "WHERE car.brand_id = b.id AND car.category_id = cay.id "
-                + "ORDER BY car.price DESC";
+                + "ORDER BY car.rent DESC";
         query(sql, null, new ResultSetHandler() {
             @Override
             public void handleRs(ResultSet rs) throws SQLException {
@@ -364,7 +364,7 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
                 + "FROM t_car car, t_brand b, t_category cay "
                 + "WHERE car.brand_id = b.id AND car.category_id = cay.id "
                 + "and car.usable =0"
-                +"in order by price ASC";
+                +"in order by rent ASC";
         ;
         query(sql, null, new ResultSetHandler() {
             @Override
@@ -397,7 +397,7 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
                 + "FROM t_car car, t_brand b, t_category cay "
                 + "WHERE car.brand_id = b.id AND car.category_id = cay.id "
                 + "and car.usable =0"
-                +"in order by price DESC";
+                +"in order by rent DESC";
         ;
         query(sql, null, new ResultSetHandler() {
             @Override
