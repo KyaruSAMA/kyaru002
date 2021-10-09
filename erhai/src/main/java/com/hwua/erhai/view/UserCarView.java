@@ -23,7 +23,7 @@ public class UserCarView extends Client {
     }
 
     public void showCar(String[] strings) {
-        U
+
         UserQueryCarsRequest userQueryCarsRequest=null;
         if (strings!=null&&strings.length==1){
             String optionType =strings[0];
