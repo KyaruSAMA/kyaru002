@@ -16,7 +16,7 @@ public interface ICarService {
      * @return 汽车的集合
      */
     List<Car> queryUsableCars(String type, String value);
-
+    List<Car> queryUsableCars(String type);
     /**
      * 查询汽车的集合
      *

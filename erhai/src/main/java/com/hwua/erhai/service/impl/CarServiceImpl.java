@@ -48,7 +48,24 @@ public class CarServiceImpl implements ICarService {
 
         return cars;
     }
+    public List<Car> queryUsableCars(String type) {
 
+        List<Car> cars=null;
+        if ("1".equals(type)){
+            cars=carDao.queryUsableCarsByPriceDesc();
+        }
+        else if ("2".equals(type)){
+            cars=carDao.queryUsableCarsByPriceAsc();
+        }
+        else if ("3".equals(type)){
+            cars = carDao.queryAllUsableCars();
+
+        }else{
+            throw new UnsupportedOperationException(String.format("unsupported type [%s]",type));
+        }
+
+        return cars;
+    }
     public List<Car> queryCars(String type, String value) {
 
         List<Car> cars=null;
@@ -60,6 +77,9 @@ public class CarServiceImpl implements ICarService {
         }
         else if ("3".equals(type)){
             cars = carDao.queryAllCars();
+        } else if ("5".equals(type)){
+            cars = carDao.queryCarsByCategoryId(Integer.parseInt(value));
+
         }else{
             throw new UnsupportedOperationException(String.format("unsupported type [%s]",type));
         }
@@ -82,10 +102,7 @@ public class CarServiceImpl implements ICarService {
             cars = carDao.queryAllCars();
 
         }
-        else if ("5".equals(type)){
-            cars = carDao.queryCarsByCategoryId(car.setCategoryId());
-
-        }else{
+      else{
             throw new UnsupportedOperationException(String.format("unsupported type [%s]",type));
         }
 

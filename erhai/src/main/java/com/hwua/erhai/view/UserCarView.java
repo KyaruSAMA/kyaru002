@@ -17,13 +17,16 @@ import java.util.List;
  */
 public class UserCarView extends Client {
     private User user = null;// 登录后的用户信息
+    private  String[] split;
 
     public UserCarView(User user) {
         this.user = user;
     }
-
+    public String returnsplit(String[] a){
+        a=this.split;
+        return split[1];
+    }
     public void showCar(String[] strings) {
-
         UserQueryCarsRequest userQueryCarsRequest=null;
         if (strings!=null&&strings.length==1){
             String optionType =strings[0];
@@ -38,7 +41,7 @@ public class UserCarView extends Client {
                 }else if ("2".equals(optionType)&&"2".equals(orderType)){
                     userQueryCarsRequest=new UserQueryCarsRequest(Constant.USER_QUERY_CARS,null,null,"2");
                 }
-                else if ("3".equals(optionType)&&"1".equals(orderType)){
+                else if ("3".equals(optionType)){
                     userQueryCarsRequest=new UserQueryCarsRequest(Constant.USER_QUERY_CARS,null,null,"5");
                 }
 
@@ -68,7 +71,9 @@ public class UserCarView extends Client {
             System.out.println("输入6            查看我的租车记录");
             System.out.println("输入7+汽车编号     还车");
             String result = ScannerUtil.next();
-            switch (result){
+
+            split =result.split("\\+");
+            switch (split[0]){
                 case "0" :
                     System.exit(0);
                 case "1+2":
@@ -77,12 +82,12 @@ public class UserCarView extends Client {
                     showCar(new String[]{"2","1"});
                 case "2+2":
                     showCar(new String[]{"2","2"});
-                case "3+1":
-                    showCar(new String[]{"3","1"});
+                case "3":
+                    showCar(new String[]{"3",split[1]});
                 case "5":
                     showCar(new String[]{"5"});
-            }
         }
         }
     }
+}
 

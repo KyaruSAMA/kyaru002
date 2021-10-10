@@ -8,6 +8,7 @@ import com.hwua.erhai.service.impl.CarServiceImpl;
 import com.hwua.erhai.service.impl.UserServiceImpl;
 import com.hwua.erhai.util.Constant;
 import com.hwua.erhai.util.JsonUtil;
+import com.hwua.erhai.view.UserCarView;
 import com.hwua.erhai.vo.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class ServerDispatchRequest extends DispatchRequestRunnable {
     private final IUserService userService = new UserServiceImpl();
     private final ICarService carService = new CarServiceImpl();
+
 
     public ServerDispatchRequest(Socket socket) {
         super(socket);
@@ -125,6 +127,7 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
     //ss
     private Response dispatchUserQueryCars(String request) {
         UserQueryCarsRequest userQueryCarsRequest =JsonUtil.fromJson(request,UserQueryCarsRequest.class);
+
         List<Car> cars =null;
         if ("1".equals(userQueryCarsRequest.getType())){
             cars =carService.queryCars("1");
@@ -133,8 +136,9 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
         }else if ("3".equals(userQueryCarsRequest.getType())){
             cars=carService.queryCars("3");
         }else if ("5".equals(userQueryCarsRequest.getType())){
-            cars=carService.queryCars("5");
+            cars=carService.queryCars("5",split[1]);
         }
+
         else if ("4".equals(userQueryCarsRequest.getType())){
             cars=carService.queryCars(userQueryCarsRequest.getId());
         }
