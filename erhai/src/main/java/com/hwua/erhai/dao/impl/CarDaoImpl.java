@@ -154,7 +154,7 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
                 + "car.t_comments, car.rent,car.status, car.usable "
                 + "FROM t_car car, t_brand b, t_category cay "
                 +"where car.brand_id = b.id AND car.category_id = cay.id "
-                +"and car.BrandId = ?"
+                +"and car.brand_id = ?"
                 ;
         query(sql, new PreparedStatementSetter() {
             @Override
@@ -224,7 +224,7 @@ public class CarDaoImpl extends JDBCTemplate implements ICarDao {
 
     @Override
     public int updateCar(Connection conn, final long id, final int status, final int beforeStatus) {
-        String sql = "update t_car set  car.status =? where car.id =?";
+        String sql = "update t_car set  status =? where id =?";
         update(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement pstmt) throws SQLException {

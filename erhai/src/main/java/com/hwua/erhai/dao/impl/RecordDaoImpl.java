@@ -108,9 +108,11 @@ public class RecordDaoImpl extends JDBCTemplate implements IRecordDao {
     @Override
     public Record queryRecordById(Connection conn, final long id) {
         Record record = new Record();
-        String sql = "select Id,user_id,car_id,start_date,return_date,payment from t_record where user_Id = ?";
-
-        query(sql, new PreparedStatementSetter() {
+        String sql = "SELECT  record.id, car.model,car.rent,car.t_comments,b.name," +
+                " cay.name,record.start_date " +
+                "from t_record record ,t_car car ,t_brand b, t_category cay" +
+                " WHERE record.car_id = car.id AND car.brand_id = b.id AND car.category_id = cay.id AND record.id =?";
+        query(conn, sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement pstmt) throws SQLException {
                 pstmt.setLong(1,id);
@@ -120,11 +122,13 @@ public class RecordDaoImpl extends JDBCTemplate implements IRecordDao {
             public void handleRs(ResultSet rs) throws SQLException {
                 while (rs.next()) {
                     record.setId(rs.getLong(1));
-                    record.setUserId(rs.getLong(2));
-                    record.setCarId(rs.getLong(3));
-                    record.setStartDate(rs.getString(4));
-                    record.setReturnDate(rs.getString(5));
-                    record.setPayment(rs.getDouble(6));
+                    record.setModel(rs.getString(2));
+                    record.setRent(rs.getDouble(3));
+                    record.setComments(rs.getString(4));
+                    record.setBrandName(rs.getString(5));
+                    record.setCategoryName(rs.getString(6));
+                    record.setStartDate(rs.getString(7));
+
                 }
 
             }

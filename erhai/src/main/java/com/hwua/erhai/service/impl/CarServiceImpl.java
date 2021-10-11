@@ -80,6 +80,9 @@ public class CarServiceImpl implements ICarService {
         } else if ("5".equals(type)){
             cars = carDao.queryCarsByCategoryId(Integer.parseInt(value));
 
+        } else if ("6".equals(type)){
+            cars = carDao.queryCarsByBrandId(Integer.parseInt(value));
+
         }else{
             throw new UnsupportedOperationException(String.format("unsupported type [%s]",type));
         }

@@ -1,10 +1,10 @@
 package com.hwua.erhai.vo;
 
 public class RentCarRequest extends Request {
-    private int userId;
+    private long userId;
     private int carId;
 
-    public RentCarRequest(String requestType, int userId, int carId) {
+    public RentCarRequest(String requestType, long userId, int carId) {
         super(requestType);
         this.userId = userId;
         this.carId = carId;
@@ -12,7 +12,7 @@ public class RentCarRequest extends Request {
     public RentCarRequest(){
 
     }
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 

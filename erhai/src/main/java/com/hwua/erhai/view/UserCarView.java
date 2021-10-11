@@ -8,7 +8,6 @@ import com.hwua.erhai.util.JsonUtil;
 import com.hwua.erhai.util.ScannerUtil;
 import com.hwua.erhai.vo.UserQueryCarsRequest;
 import com.hwua.erhai.vo.UserQueryCarsResponse;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
@@ -17,38 +16,51 @@ import java.util.List;
  */
 public class UserCarView extends Client {
     private User user = null;// 登录后的用户信息
-    private  String[] split;
+
+
 
     public UserCarView(User user) {
         this.user = user;
     }
-    public String returnsplit(String[] a){
-        a=this.split;
-        return split[1];
-    }
     public void showCar(String[] strings) {
         UserQueryCarsRequest userQueryCarsRequest=null;
+
+
         if (strings!=null&&strings.length==1){
             String optionType =strings[0];
             if ("5".equals(optionType)){
                 userQueryCarsRequest =new UserQueryCarsRequest(Constant.USER_QUERY_CARS,null,null,"3");
-            }}else if (strings!=null&&strings.length==2){
+
+            }
+            else if ("5".equals(optionType)){
+                userQueryCarsRequest =new UserQueryCarsRequest(Constant.USER_QUERY_CARS,null,null,"3");
+            }
+
+        }else if (strings!=null&&strings.length==2){
                 String optionType =strings[0];
                 String orderType = strings[1];
+                int    orderType1=Integer.parseInt(strings[1]);
 
-                if ("2".equals(optionType)&&"1".equals(orderType)){
+              if ("2".equals(optionType)&&"1".equals(orderType)){
                     userQueryCarsRequest=new UserQueryCarsRequest(Constant.USER_QUERY_CARS,null,null,"1");
                 }else if ("2".equals(optionType)&&"2".equals(orderType)){
                     userQueryCarsRequest=new UserQueryCarsRequest(Constant.USER_QUERY_CARS,null,null,"2");
                 }
                 else if ("3".equals(optionType)){
-                    userQueryCarsRequest=new UserQueryCarsRequest(Constant.USER_QUERY_CARS,null,null,"5");
+                    userQueryCarsRequest=new UserQueryCarsRequest(Constant.USER_QUERY_CARS,orderType,null,"5");
                 }
+                else if ("4".equals(optionType)){
+                    userQueryCarsRequest=new UserQueryCarsRequest(Constant.USER_QUERY_CARS,orderType,null,"6");
+                }
+
 
             }
         String request = JsonUtil.toJson(userQueryCarsRequest);
+
         String response= request(request);
+
         UserQueryCarsResponse userQueryCarsResponse=JsonUtil.fromJson(response,UserQueryCarsResponse.class);
+
         if (userQueryCarsResponse==null||userQueryCarsResponse.getCode()==400){
             System.out.println("查询失败");
         }else {
@@ -71,21 +83,26 @@ public class UserCarView extends Client {
             System.out.println("输入6            查看我的租车记录");
             System.out.println("输入7+汽车编号     还车");
             String result = ScannerUtil.next();
-
+            String[] split;
             split =result.split("\\+");
+
             switch (split[0]){
                 case "0" :
                     System.exit(0);
-                case "1+2":
-                    showCar(new String[]{"1","2"});
+                case "1":
+                    new UserRentCarView(user).RentCar(split[1]);
                 case "2+1":
                     showCar(new String[]{"2","1"});
                 case "2+2":
                     showCar(new String[]{"2","2"});
                 case "3":
                     showCar(new String[]{"3",split[1]});
+                case "4":
+                    showCar(new String[]{"4",split[1]});
                 case "5":
                     showCar(new String[]{"5"});
+                case "6":
+                    showCar(new String[]{"6"});
         }
         }
     }

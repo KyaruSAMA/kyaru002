@@ -19,19 +19,24 @@ public class UserRentCarView extends Client {
     public UserRentCarView(User user) {
         this.user = user;
     }
-    public void RentCar(String select1,String select2){
-        RentCarRequest rentCarRequest=new RentCarRequest(Constant.RENT_CAR,(int)user.getId(),Integer.parseInt(select2));
+
+
+
+    public void RentCar(String select2){
+        RentCarRequest rentCarRequest=new RentCarRequest(Constant.RENT_CAR,user.getId(),Integer.parseInt(select2));
         String request = JsonUtil.toJson(rentCarRequest);
         String response =request(request);
         RentCarResponse rentCarResponse=JsonUtil.fromJson(response,RentCarResponse.class);
         System.out.println("====================================================");
         if (rentCarResponse!=null&&rentCarResponse.getCode()==200){
             System.out.println("租车成功,租车信息如下：");
-            Record record=rentCarResponse.getRecord();
-            System.out.println("编号\t\t汽车名称\t\t每日租金\t\t备注\t\t品牌\t\t类型\t\t租车时间");
-            System.out.println(record.getCarId()+"\t\t"+record.getModel()+"\t\t"+record.getRent()+"\t\t"+
-                    record.getComments()+"\t\t"+record.getBrandName()+"\t\t"
-                    +record.getCategoryName()+"\t\t"+record.getStartDate());
+            Record record = rentCarResponse.getRecord();
+            System.out.println("编号\t\t汽车名称\t\t 每日租金\t\t 备注\t\t 品牌\t\t 类型\t\t 借车时间");
+            System.out.println(record.getId()+"\t\t"+record.getModel()+"\t\t"
+                    +record.getRent()+"\t\t"+record.getComments()+"\t\t"
+                    +record.getBrandName()+"\t\t"+record.getCategoryName()+"\t\t"
+                    +record.getStartDate());
+
             new UserCarView(user).showCar((new String[]{"5"}));
         }
         else {

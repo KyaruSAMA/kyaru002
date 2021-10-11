@@ -17,8 +17,10 @@ import java.net.Socket;
 import java.util.List;
 
 public class ServerDispatchRequest extends DispatchRequestRunnable {
+
     private final IUserService userService = new UserServiceImpl();
     private final ICarService carService = new CarServiceImpl();
+
 
 
     public ServerDispatchRequest(Socket socket) {
@@ -126,6 +128,7 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
      */
     //ss
     private Response dispatchUserQueryCars(String request) {
+
         UserQueryCarsRequest userQueryCarsRequest =JsonUtil.fromJson(request,UserQueryCarsRequest.class);
 
         List<Car> cars =null;
@@ -136,7 +139,9 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
         }else if ("3".equals(userQueryCarsRequest.getType())){
             cars=carService.queryCars("3");
         }else if ("5".equals(userQueryCarsRequest.getType())){
-            cars=carService.queryCars("5",split[1]);
+            cars=carService.queryCars("5",userQueryCarsRequest.getId());
+        }else if ("6".equals(userQueryCarsRequest.getType())){
+            cars=carService.queryCars("6",userQueryCarsRequest.getId());
         }
 
         else if ("4".equals(userQueryCarsRequest.getType())){
