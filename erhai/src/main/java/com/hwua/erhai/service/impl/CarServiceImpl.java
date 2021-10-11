@@ -20,7 +20,10 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class CarServiceImpl implements ICarService {
@@ -162,13 +165,36 @@ public class CarServiceImpl implements ICarService {
             // 启动本次连接的事务功能
             conn.setAutoCommit(false);
             // 查询当前汽车是否可租赁
+            Car car=carDao.queryCarById(conn,carId);
+            if (car!=null&&car.getStatus()==1&&car.getUsable()==0){
+            List<Record>records=recordDao.queryRecordsByUserId(userId);
+            int row =0;
+            for (Record record1:records){
+                if (record1.getCarId()==car.getId()){
+                    row =carDao.updateCar(conn,record1.getCarId(),0,1);
+                    if (row==1){
+                        DateFormat dft =new SimpleDateFormat("yyyy-MM-dd");
+                        String returnDate =Util.today();
+                        String startDate=record1.getStartDate();
+                        Date star=dft.parse(startDate);
+                        Date endDay=dft.parse(returnDate);
+                        long starTime=star.getTime();
+                        long endTime=endDay.getTime();
+                        long num=endTime -starTime;
+                        long day =num /24/60/60/1000;
+                        double payment;
+                        payment=day*record1.getRent();
+                        recordDao.updateRecord(conn,record1.getId(),returnDate,payment);
+                        record=recordDao.queryRecordById(conn,record1.getId());
 
-
-                // 如果可以租赁，修改汽车表
-
-                    id = recordDao.updateRecord(conn,record.getId(), Util.today(), record.getPayment());
-                    record = recordDao.queryRecordById(conn, id);
-
+                    }
+                    else {
+                        throw new Exception(String.format("carDao.updateCar failed, carId[%s]", carId));
+                    }
+                    break;
+                }
+            }
+            }
 
             // 提交事务
             conn.commit();
@@ -192,7 +218,7 @@ public class CarServiceImpl implements ICarService {
         Record record = new Record();
         List<Record> records=null;
         if ("1".equals(type)){
-            records=recordDao.queryRecordsByUserId(record.getUserId());
+            records=recordDao.queryRecordsByUserId(Integer.parseInt(value));
         }
         else if ("2".equals(type)){
             records=recordDao.queryRecordsByCarId(record.getCarId());

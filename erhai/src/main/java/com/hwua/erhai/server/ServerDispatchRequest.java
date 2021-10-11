@@ -226,7 +226,7 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
         QueryRecordsRequest queryRecordsRequest=JsonUtil.fromJson(request,QueryRecordsRequest.class);
         List<Record>records=null;
         if ("1".equals(queryRecordsRequest.getType())){
-            records =carService.queryRecords("1");
+            records =carService.queryRecords("1",queryRecordsRequest.getId());
         }else if ("2".equals(queryRecordsRequest.getType())){
             records=carService.queryRecords("2");
         }else if ("3".equals(queryRecordsRequest.getType())){

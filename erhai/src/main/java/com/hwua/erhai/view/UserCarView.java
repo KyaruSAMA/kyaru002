@@ -102,7 +102,9 @@ public class UserCarView extends Client {
                 case "5":
                     showCar(new String[]{"5"});
                 case "6":
-                    showCar(new String[]{"6"});
+                   new UserRecordView(user).showRecord("1");
+                case "7":
+                    new  UserReturnCarView(user).ReturnCar(split[1]);
         }
         }
     }
