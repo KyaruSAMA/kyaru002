@@ -30,7 +30,7 @@ public class UserReturnCarView extends Client {
             System.out.println("还车成功,租车信息如下：");
             Record record=returnCarResponse.getRecord();
             System.out.println("编号\t\t汽车名称\t\t租金\t\t备注\t\t品牌\t\t类型\t\t租车时间\t\t还车时间");
-            System.out.println(record.getCarId()+"\t\t"+record.getModel()+"\t\t"+record.getRent()+"\t\t"+
+            System.out.println(record.getId()+"\t\t"+record.getCarId()+"\t\t"+record.getPayment()+"\t\t"+
                     record.getComments()+"\t\t"+record.getBrandName()+"\t\t"
                     +record.getCategoryName()+"\t\t"+record.getStartDate()+"\t\t"+record.getReturnDate());
             new UserCarView(user).showCar((new String[]{"5"}));

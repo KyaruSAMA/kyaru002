@@ -171,7 +171,11 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
             cars=carService.queryCars("3");
         }else if ("4".equals(adminQueryCarsRequest.getType())){
             cars=carService.queryCars(adminQueryCarsRequest.getId());
-        }
+        }else if ("5".equals(adminQueryCarsRequest.getType())){
+        cars=carService.queryCars("5",adminQueryCarsRequest.getId());
+    }else if ("6".equals(adminQueryCarsRequest.getType())){
+        cars=carService.queryCars("6",adminQueryCarsRequest.getId());
+    }
         if (cars ==null){
             return new AdminQueryCarsResponse(400,"查询汽车失败",null);
         }else {

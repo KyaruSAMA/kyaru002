@@ -184,7 +184,7 @@ public class CarServiceImpl implements ICarService {
                         long day =num /24/60/60/1000;
                         double payment;
                         payment=day*record1.getRent();
-                        recordDao.updateRecord(conn,record1.getId(),returnDate,payment);
+                        recordDao.updateRecord(conn,record1.getId(),Util.today(),payment);
                         record=recordDao.queryRecordById(conn,record1.getId());
 
                     }

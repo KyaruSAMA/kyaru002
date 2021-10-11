@@ -19,8 +19,8 @@ public class UserRecordView extends Client {
     public UserRecordView(User user) {
         this.user = user;
     }
-    public void showRecord(String s) {
-        QueryRecordsRequest queryRecordsRequest=new QueryRecordsRequest(Constant.QUERY_RECORDS,String.valueOf(user.getId()),null,s);
+    public void showRecord() {
+        QueryRecordsRequest queryRecordsRequest=new QueryRecordsRequest(Constant.QUERY_RECORDS,String.valueOf(user.getId()),null,"1");
         String request = JsonUtil.toJson(queryRecordsRequest);
 
         String response= request(request);
