@@ -49,67 +49,88 @@ public class RecordDaoImpl extends JDBCTemplate implements IRecordDao {
     @Override
     public int updateRecord(Connection conn, final long recordId, final String returnTime, final double payment) {
         PreparedStatement pstmt = null;
-
         long id;
-        String sql = "update t_record set return_date=?,payment=? where id = ?";
+        String sql = "update t_record set return_date= ?, payment=? where id=?";
         try {
-            // 执行SQL语句
             pstmt = conn.prepareStatement(
-                    sql, Statement.RETURN_GENERATED_KEYS);
-            pstmt.setLong(3, recordId);
-            pstmt.setString(1, Util.today());
+                    sql);
+            pstmt.setString(1, returnTime);
             pstmt.setDouble(2, payment);
+            pstmt.setLong(3, recordId);
             pstmt.executeUpdate();
-
         } catch (SQLException e) {
             throw new RuntimeException(String.format("failed to execute sql[%s]", sql), e);
         } finally {
             DBUtil.close( pstmt);
         }
-
-        // 返回的id是新增记录的主键
         return 1;
     }
 
+//    public int updateRecord(Connection conn, final long recordId, final String returnTime, final double payment) {
+//        PreparedStatement pstmt = null;
+//
+//        long id;
+//        String sql = "update t_record set return_date=?,payment=? where id = ?";
+//        try {
+//            // 执行SQL语句
+//            pstmt = conn.prepareStatement(
+//                    sql);
+//            pstmt.setLong(3, recordId);
+//            pstmt.setString(1, returnTime);
+//            pstmt.setDouble(2, payment);
+//
+//
+//        } catch (SQLException e) {
+//            throw new RuntimeException(String.format("failed to execute sql[%s]", sql), e);
+//        } finally {
+//            DBUtil.close( pstmt);
+//        }
+//
+//        // 返回的id是新增记录的主键
+//        return 1;
+//    }
+
     @Override
     public List<Record> queryRecordsByUserId(final long userId) {
-
         final List<Record> list = new ArrayList<>();
-        String sql = "select Id,user_id,car_id,start_date,return_date,payment from t_record where user_Id = ?";
+        String sql = "SELECT re.id,car.id,car.model,re.payment,"
+                + "car.t_comments,b.name,cay.name,re.start_date,re.return_date "
+                + "FROM t_car car, t_brand b, t_category cay ,t_record re "
+                + "WHERE car.brand_id = b.id AND car.category_id = cay.id AND car.id = re.car_id "
+                + "and re.user_id =? ";
+        query(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement pstmt) throws SQLException {
+                pstmt.setLong(1, userId);
+            }
+        }, new ResultSetHandler() {
+            @Override
+            public void handleRs(ResultSet rs) throws SQLException {
+                while (rs.next()) {
+                    Record record = new Record(
+                            rs.getLong(1),
+                            rs.getLong(2),
+                            rs.getString(3),
+                            rs.getDouble(4),
+                            rs.getString(5),
+                            rs.getString(6),
+                            rs.getString(7),
+                            rs.getString(8),
+                            rs.getString(9));
 
-            query(sql, new PreparedStatementSetter() {
-                @Override
-                public void setValues(PreparedStatement pstmt) throws SQLException {
-                    pstmt.setLong(1,userId);
+                    list.add(record);
                 }
-            }, new ResultSetHandler() {
-                @Override
-                public void handleRs(ResultSet rs) throws SQLException {
-                    while (rs.next()) {
-                        Record record = new Record(
-                                rs.getLong(1),
-                                rs.getLong(2),
-                                rs.getLong(3),
-                                rs.getString(4),
-                                rs.getString(5),
-                                rs.getDouble(6)
 
-                        );
-                                list.add(record);
-                    }
-
-                }
-            });
-
-
-        return list;
+            }
+        });
+        return  list;
     }
 
     @Override
     public Record queryRecordById(Connection conn, final long id) {
         Record record = new Record();
         String sql = "SELECT  record.id, car.model,car.rent,car.t_comments,b.name," +
-                " cay.name,record.start_date " +
+                " cay.name,record.start_date,record.return_date,record.payment " +
                 "from t_record record ,t_car car ,t_brand b, t_category cay" +
                 " WHERE record.car_id = car.id AND car.brand_id = b.id AND car.category_id = cay.id AND record.id =?";
         query(conn, sql, new PreparedStatementSetter() {
@@ -128,7 +149,8 @@ public class RecordDaoImpl extends JDBCTemplate implements IRecordDao {
                     record.setBrandName(rs.getString(5));
                     record.setCategoryName(rs.getString(6));
                     record.setStartDate(rs.getString(7));
-
+                    record.setReturnDate(rs.getString(8));
+                    record.setPayment(rs.getDouble(9));
                 }
 
             }
@@ -143,7 +165,7 @@ public class RecordDaoImpl extends JDBCTemplate implements IRecordDao {
         Record record = new Record();
         String sql = "select Id,user_id,car_id,start_date,return_date,payment from t_record where (user_Id = ? or car_id = ?) and return_date is null ";
 
-        query(sql, new PreparedStatementSetter() {
+        query(conn,sql, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement pstmt) throws SQLException {
                 pstmt.setLong(1,userId);

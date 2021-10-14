@@ -77,6 +77,12 @@ public class Car {
         this.rent = rent;
         this.status = status;
     }
+    public Car(long id,double rent,int usable){
+        this.id=id;
+        this.rent=rent;
+        this.usable=usable;
+    }
+
 
     public long getId() {
         return id;

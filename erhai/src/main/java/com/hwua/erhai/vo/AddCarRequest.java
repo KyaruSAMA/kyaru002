@@ -15,9 +15,9 @@ public class AddCarRequest extends Request{
     private int status;
     private int usable;
 
-    public AddCarRequest(String requestType, long id, String carNumber, int brandId,
-                         String brandName, String model, String color, int categoryId,
-                         String categoryName, String comments, double price, double rent, int status, int usable) {
+    public AddCarRequest(String requestType, String carNumber, int brandId,
+                         String brandName, String model, int categoryId,
+                         String categoryName, double price, double rent, int status, int usable) {
         super(requestType);
         this.id = id;
         this.carNumber = carNumber;

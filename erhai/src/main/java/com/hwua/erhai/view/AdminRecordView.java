@@ -22,27 +22,24 @@ public class AdminRecordView extends Client {
         this.user = user;
     }
     public void showRecord(String[] strings) {
-        AdminQueryCarsRequest adminQueryCarsRequest=null;
+
+        QueryRecordsRequest queryRecordsRequest=null;
         if (strings!=null&&strings.length==1){
             String optionType =strings[0];
-            if ("5".equals(optionType)){
-                adminQueryCarsRequest=new AdminQueryCarsRequest(Constant.ADMIN_QUERY_CARS,null,null,"3");
+            if ("6".equals(optionType)){
+                queryRecordsRequest=new QueryRecordsRequest(Constant.QUERY_RECORDS,null,null,"3");
             }
         }else if (strings!=null&&strings.length==2){
             String optionType=strings[0];
             String orderType=strings[1];
-            if ("2".equals(optionType)&&"1".equals(orderType)){
-                adminQueryCarsRequest=new AdminQueryCarsRequest(Constant.ADMIN_QUERY_CARS,null,null,"1");
-            }else if ("2".equals(optionType)&&"2".equals(orderType)){
-                adminQueryCarsRequest=new AdminQueryCarsRequest(Constant.ADMIN_QUERY_CARS,null,null,"2");
-            } else if ("3".equals(optionType)){
-                adminQueryCarsRequest=new AdminQueryCarsRequest(Constant.USER_QUERY_CARS,orderType,null,"5");
+            if ("7".equals(optionType)){
+                queryRecordsRequest=new QueryRecordsRequest(Constant.QUERY_RECORDS,orderType,null,"1");
             }
-            else if ("4".equals(optionType)){
-                adminQueryCarsRequest=new AdminQueryCarsRequest(Constant.USER_QUERY_CARS,orderType,null,"6");
+            else if ("8".equals(optionType)){
+                queryRecordsRequest=new QueryRecordsRequest(Constant.QUERY_RECORDS,orderType,null,"2");
             }
         }
-        QueryRecordsRequest queryRecordsRequest=new QueryRecordsRequest(Constant.QUERY_RECORDS,String.valueOf(user.getId()),null,"3");
+
         String request = JsonUtil.toJson(queryRecordsRequest);
 
         String response= request(request);
@@ -58,43 +55,36 @@ public class AdminRecordView extends Client {
             List<Record> records= queryRecordsResponse.getRecords();
             for (Record record:records){
                 System.out.printf("%d\t\t\t%s\t\t\t%s\t\t\t%s\t\t\t%s\t\t\t%s\n",
-                        record.getId(),record.getUserId(),record.getCarId(),record.getStartDate(),record.getReturnDate(),record.getPayment());
-                System.out.println("==========================================================");
-                System.out.println("输入0        退出");
-                System.out.println("输入5        查看全部汽车");
-                System.out.println("输入6        查看全部租赁记录");
-                System.out.println("输入7+用户编号 查询指定用户租赁记录");
-                System.out.println("输入7+汽车    查询指定汽车租赁记录");
+                        record.getId(),record.getUserId(),record.getCarId(),record.getStartDate(),record.getReturnDate(),record.getPayment());}
+            System.out.println("==========================================================");
+            System.out.println("输入0        退出");
+            System.out.println("输入5        查看全部汽车");
+            System.out.println("输入6        查看全部租赁记录");
+            System.out.println("输入7+用户编号 查询指定用户租赁记录");
+            System.out.println("输入8+汽车    查询指定汽车租赁记录");
 
 
-                String result = ScannerUtil.next();
-                String[] split;
-                split =result.split("\\+");
+            String result = ScannerUtil.next();
+            String[] split;
+            split =result.split("\\+");
 
-                switch (split[0]){
-                    case "0" :
-                        System.exit(0);
-                    case "1":
-                        new UserRentCarView(user).RentCar(split[1]);
-                    case "2":
-                        if (split[1] == "1"){
-                            showCar(new String[]{"2","1"});
-                        }else {
-                            showCar(new String[]{"2","2"});
-                        }
-                    case "3":
-                        showCar(new String[]{"3",split[1]});
-                    case "4":
-                        showCar(new String[]{"4",split[1]});
-                    case "5":
-                        showCar(new String[]{"5"});
-                    case "6":
-                        new UserRecordView(user).showRecord();
-                        break;
-                }
+            switch (split[0]){
+                case "0" :
+                    System.exit(0);
+                case "5":
+                    new AdminCarView(user).showCar(new String[]{"5"});
+
+                case "6":
+                    showRecord(new String[]{"6"});
+                case "7":
+                    showRecord(new String[]{"7",split[1]});
+                case "8":
+                    showRecord(new String[]{"8",split[1]});
+
             }
         }
     }
+
 
 }
 

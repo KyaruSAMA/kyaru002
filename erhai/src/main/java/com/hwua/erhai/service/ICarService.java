@@ -83,7 +83,7 @@ public interface ICarService {
      * @param carId 汽车编号
      * @return 修改成功的汽车
      */
-    Car updateCar(String type, String value, long carId);
+    boolean updateCar(String type, String value, long carId);
 
 
     List<Car> queryCars(String type);

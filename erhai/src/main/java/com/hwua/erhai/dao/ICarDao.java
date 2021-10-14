@@ -107,7 +107,7 @@ public interface ICarDao {
      * @return 汽车对象集合，统一使用集合，便于后面把所有查询集中起来
      */
     List<Car> queryCarById(long id);
-
+    List<Car> queryCarByCarnumber(long carNumber);
     /**
      * 添加汽车
      *

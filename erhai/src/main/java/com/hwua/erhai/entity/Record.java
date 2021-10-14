@@ -70,6 +70,19 @@ public class Record {
         this.payment = payment;
     }
 
+    public Record(long id, long carId,String model,double payment,String comments,String brandName,String categoryName,
+                  String startDate, String returnDate) {
+        this.id = id;
+        this.carId = carId;
+        this.model = model;
+        this.payment = payment;
+        this.comments = comments;
+        this.brandName = brandName;
+        this.categoryName = categoryName;
+        this.startDate = startDate;
+        this.returnDate = returnDate;
+
+    }
     public long getId() {
         return id;
     }

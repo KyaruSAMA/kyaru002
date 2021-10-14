@@ -34,7 +34,10 @@ public class AdminCarView extends Client {
       }else if (strings!=null&&strings.length==2){
           String optionType=strings[0];
           String orderType=strings[1];
-          if ("2".equals(optionType)&&"1".equals(orderType)){
+          if ("1".equals(optionType)){
+              adminQueryCarsRequest=new AdminQueryCarsRequest(Constant.ADMIN_QUERY_CARS,orderType,null,"7");
+          }
+          else if ("2".equals(optionType)&&"1".equals(orderType)){
               adminQueryCarsRequest=new AdminQueryCarsRequest(Constant.ADMIN_QUERY_CARS,null,null,"1");
           }else if ("2".equals(optionType)&&"2".equals(orderType)){
               adminQueryCarsRequest=new AdminQueryCarsRequest(Constant.ADMIN_QUERY_CARS,null,null,"2");
@@ -43,6 +46,9 @@ public class AdminCarView extends Client {
           }
           else if ("4".equals(optionType)){
               adminQueryCarsRequest=new AdminQueryCarsRequest(Constant.USER_QUERY_CARS,orderType,null,"6");
+          }
+          else if ("9".equals(optionType)){
+              adminQueryCarsRequest=new AdminQueryCarsRequest(Constant.USER_QUERY_CARS,orderType,null,"8");
           }
       }
       String request = JsonUtil.toJson(adminQueryCarsRequest);
@@ -78,26 +84,37 @@ public class AdminCarView extends Client {
                 case "0" :
                     System.exit(0);
                 case "1":
-                    new UserRentCarView(user).RentCar(split[1]);
+                    showCar(new String[]{"1",split[1]});
+                    break;
                 case "2":
-                    if (split[1] == "1"){
-                        showCar(new String[]{"2","1"});
-                    }else {
-                        showCar(new String[]{"2","2"});
+                    switch (split[1]){
+                        case "1":
+                            showCar(new String[]{"2","1"});
+                        case "2":
+                            showCar(new String[]{"2","2"});
                     }
+                    break;
                 case "3":
                     showCar(new String[]{"3",split[1]});
+                    break;
                 case "4":
                     showCar(new String[]{"4",split[1]});
+                    break;
                 case "5":
                     showCar(new String[]{"5"});
+                    break;
                 case "6":
-                    new UserRecordView(user).showRecord();
+                    new AdminAddCarView(user).ShowaddCar();
                     break;
                 case "7":
-                    new  UserReturnCarView(user).ReturnCar(split[1]);
+                    new  AdminUpdateCarView(user).showupdatecar(new String[]{"7",split[1]});
+                    break;
                 case "8":
-                    new AdminRecordView(user).showRecord(split);
+                    new AdminRecordView(user).showRecord(new String[]{"6"});
+                    break;
+                case "9":
+                    showCar(new String[]{"8",split[1]});
+                    break;
             }}
     }
 }

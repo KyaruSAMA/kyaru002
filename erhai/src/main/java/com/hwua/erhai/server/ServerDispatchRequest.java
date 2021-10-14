@@ -61,10 +61,10 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
             case Constant.QUERY_BRANDS: //查询类别和品牌
                 response = dispatchQueryBrands(request);
                 break;
-   /*       case Constant.ADD_CAR: //添加汽车
+         case Constant.ADD_CAR: //添加汽车
                 response = dispatchAddCar(request);
                break;
-*/
+
 
             case Constant.UPDATE_CAR: //修改汽车
                 response = dispatchUpdateCar(request);
@@ -133,15 +133,15 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
 
         List<Car> cars =null;
         if ("1".equals(userQueryCarsRequest.getType())){
-            cars =carService.queryCars("1");
+            cars =carService.queryUsableCars("1");
         }else if ("2".equals(userQueryCarsRequest.getType())){
-            cars=carService.queryCars("2");
+            cars=carService.queryUsableCars("2");
         }else if ("3".equals(userQueryCarsRequest.getType())){
-            cars=carService.queryCars("3");
+            cars=carService.queryUsableCars("3");
         }else if ("5".equals(userQueryCarsRequest.getType())){
-            cars=carService.queryCars("5",userQueryCarsRequest.getId());
+            cars=carService.queryUsableCars("5",userQueryCarsRequest.getId());
         }else if ("6".equals(userQueryCarsRequest.getType())){
-            cars=carService.queryCars("6",userQueryCarsRequest.getId());
+            cars=carService.queryUsableCars("6",userQueryCarsRequest.getId());
         }
 
         else if ("4".equals(userQueryCarsRequest.getType())){
@@ -175,7 +175,11 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
         cars=carService.queryCars("5",adminQueryCarsRequest.getId());
     }else if ("6".equals(adminQueryCarsRequest.getType())){
         cars=carService.queryCars("6",adminQueryCarsRequest.getId());
-    }
+    }else if ("7".equals(adminQueryCarsRequest.getType())){
+            cars=carService.queryCars("7",adminQueryCarsRequest.getId());
+        }else if ("8".equals(adminQueryCarsRequest.getType())){
+            cars=carService.queryCars("8",adminQueryCarsRequest.getId());
+        }
         if (cars ==null){
             return new AdminQueryCarsResponse(400,"查询汽车失败",null);
         }else {
@@ -216,7 +220,7 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
             return new ReturnCarResponse(200, "租车成功", record);
         } else {
             // code = 400 表示失败
-            return new ReturnCarResponse(400, "租车失败", null);
+            return new ReturnCarResponse(400, "还车失败", null);
         }
     }
 
@@ -232,7 +236,7 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
         if ("1".equals(queryRecordsRequest.getType())){
             records =carService.queryRecords("1",queryRecordsRequest.getId());
         }else if ("2".equals(queryRecordsRequest.getType())){
-            records=carService.queryRecords("2");
+            records=carService.queryRecords("2",queryRecordsRequest.getId());
         }else if ("3".equals(queryRecordsRequest.getType())){
             records=carService.queryRecords("3");
         }else if ("4".equals(queryRecordsRequest.getType())){
@@ -287,14 +291,22 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
      * @param request
      * @return
      */
-  /** private Response dispatchAddCar(String request) {
+   private Response dispatchAddCar(String request) {
        AddCarRequest addCarRequest=JsonUtil.fromJson(request,AddCarRequest.class);
-       Car car =null;
+       Car car = new Car(0,addCarRequest.getCarNumber(),addCarRequest.getBrandId(),addCarRequest.getBrandName(),
+               addCarRequest.getModel(),addCarRequest.getColor(),addCarRequest.getCategoryId(),addCarRequest.getCategoryName()
+       ,addCarRequest.getComments(),addCarRequest.getPrice(),addCarRequest.getRent(),addCarRequest.getStatus());
 
        boolean addcar=carService.addCar(car);
+       if (addcar ==false){
 
+           return new AddCarResponse(400,"添加汽车失败",null);
+       }
+       else {
+           return new AddCarResponse(200,"查询品牌成功",car);
+       }
     }
-*/
+
     /**
      * 处理修改汽车的值请求
      *
@@ -303,6 +315,15 @@ public class ServerDispatchRequest extends DispatchRequestRunnable {
      * .
      */
     private Response dispatchUpdateCar(String request) {
-        throw new NotImplementedException();
+       UpdateCarRequest updateCarRequest=JsonUtil.fromJson(request,UpdateCarRequest.class);
+        Car car = new Car(updateCarRequest.getId(),updateCarRequest.getName(),updateCarRequest.getType());
+        boolean  result= carService.updateCar(String.valueOf(updateCarRequest.getType()),String.valueOf(updateCarRequest.getName()),updateCarRequest.getId());
+
+        if (result==false){
+            return new UpdateCarResponse(400,"查询品牌失败",null);
+        }
+        else {
+            return new UpdateCarResponse(200,"查询品牌成功",car);
+        }
     }
 }

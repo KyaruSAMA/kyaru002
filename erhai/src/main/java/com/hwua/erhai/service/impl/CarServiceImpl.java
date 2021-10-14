@@ -35,59 +35,66 @@ public class CarServiceImpl implements ICarService {
     @Override
     public List<Car> queryUsableCars(String type, String value) {
 
-        List<Car> cars=null;
-        if ("1".equals(type)){
-            cars=carDao.queryUsableCarsByPriceDesc();
-        }
-        else if ("2".equals(type)){
-            cars=carDao.queryUsableCarsByPriceAsc();
-        }
-        else if ("3".equals(type)){
+        List<Car> cars = null;
+        if ("1".equals(type)) {
+            cars = carDao.queryUsableCarsByPriceDesc();
+        } else if ("2".equals(type)) {
+            cars = carDao.queryUsableCarsByPriceAsc();
+        } else if ("3".equals(type)) {
             cars = carDao.queryAllUsableCars();
 
-        }else{
-            throw new UnsupportedOperationException(String.format("unsupported type [%s]",type));
+        } else if ("5".equals(type)) {
+            cars = carDao.queryUsableCarsByCategoryId(Integer.parseInt(value));
+
+        } else if ("6".equals(type)) {
+            cars = carDao.queryCarsByBrandId(Integer.parseInt(value));
+        } else {
+            throw new UnsupportedOperationException(String.format("unsupported type [%s]", type));
         }
 
         return cars;
     }
+
     public List<Car> queryUsableCars(String type) {
 
-        List<Car> cars=null;
-        if ("1".equals(type)){
-            cars=carDao.queryUsableCarsByPriceDesc();
-        }
-        else if ("2".equals(type)){
-            cars=carDao.queryUsableCarsByPriceAsc();
-        }
-        else if ("3".equals(type)){
+        List<Car> cars = null;
+        if ("1".equals(type)) {
+            cars = carDao.queryUsableCarsByPriceDesc();
+        } else if ("2".equals(type)) {
+            cars = carDao.queryUsableCarsByPriceAsc();
+        } else if ("3".equals(type)) {
             cars = carDao.queryAllUsableCars();
 
-        }else{
-            throw new UnsupportedOperationException(String.format("unsupported type [%s]",type));
+        } else {
+            throw new UnsupportedOperationException(String.format("unsupported type [%s]", type));
         }
 
         return cars;
     }
+
     public List<Car> queryCars(String type, String value) {
 
-        List<Car> cars=null;
-        if ("1".equals(type)){
-            cars=carDao.queryCarsByPriceDesc();
-        }
-        else if ("2".equals(type)){
-            cars=carDao.queryCarsByPriceAsc();
-        }
-        else if ("3".equals(type)){
+        List<Car> cars = null;
+        if ("1".equals(type)) {
+            cars = carDao.queryCarsByPriceDesc();
+        } else if ("2".equals(type)) {
+            cars = carDao.queryCarsByPriceAsc();
+        } else if ("3".equals(type)) {
             cars = carDao.queryAllCars();
-        } else if ("5".equals(type)){
+        } else if ("5".equals(type)) {
             cars = carDao.queryCarsByCategoryId(Integer.parseInt(value));
 
-        } else if ("6".equals(type)){
+        } else if ("6".equals(type)) {
             cars = carDao.queryCarsByBrandId(Integer.parseInt(value));
 
-        }else{
-            throw new UnsupportedOperationException(String.format("unsupported type [%s]",type));
+        } else if ("7".equals(type)) {
+            cars = carDao.queryCarById(Integer.parseInt(value));
+
+        } else if ("8".equals(type)) {
+            cars = carDao.queryCarByCarnumber(Integer.parseInt(value));
+
+        } else {
+            throw new UnsupportedOperationException(String.format("unsupported type [%s]", type));
         }
 
         return cars;
@@ -95,25 +102,23 @@ public class CarServiceImpl implements ICarService {
 
     @Override
     public List<Car> queryCars(String type) {
-        Car car=new Car();
+        Car car = new Car();
 
-        List<Car> cars=null;
-        if ("1".equals(type)){
-            cars=carDao.queryCarsByPriceDesc();
-        }
-        else if ("2".equals(type)){
-            cars=carDao.queryCarsByPriceAsc();
-        }
-        else if ("3".equals(type)){
+        List<Car> cars = null;
+        if ("1".equals(type)) {
+            cars = carDao.queryCarsByPriceDesc();
+        } else if ("2".equals(type)) {
+            cars = carDao.queryCarsByPriceAsc();
+        } else if ("3".equals(type)) {
             cars = carDao.queryAllCars();
 
-        }
-      else{
-            throw new UnsupportedOperationException(String.format("unsupported type [%s]",type));
+        } else {
+            throw new UnsupportedOperationException(String.format("unsupported type [%s]", type));
         }
 
         return cars;
     }
+
     @Override
     public Record rentCar(long userId, long carId) {
         Connection conn = ConnectionFactory.getConnection();
@@ -165,35 +170,37 @@ public class CarServiceImpl implements ICarService {
             // 启动本次连接的事务功能
             conn.setAutoCommit(false);
             // 查询当前汽车是否可租赁
-            Car car=carDao.queryCarById(conn,carId);
-            if (car!=null&&car.getStatus()==1&&car.getUsable()==0){
-            List<Record>records=recordDao.queryRecordsByUserId(userId);
-            int row =0;
-            for (Record record1:records){
-                if (record1.getCarId()==car.getId()){
-                    row =carDao.updateCar(conn,record1.getCarId(),0,1);
-                    if (row==1){
-                        DateFormat dft =new SimpleDateFormat("yyyy-MM-dd");
-                        String returnDate =Util.today();
-                        String startDate=record1.getStartDate();
-                        Date star=dft.parse(startDate);
-                        Date endDay=dft.parse(returnDate);
-                        long starTime=star.getTime();
-                        long endTime=endDay.getTime();
-                        long num=endTime -starTime;
-                        long day =num /24/60/60/1000;
-                        double payment;
-                        payment=day*record1.getRent();
-                        recordDao.updateRecord(conn,record1.getId(),Util.today(),payment);
-                        record=recordDao.queryRecordById(conn,record1.getId());
+            Car car = carDao.queryCarById(conn, carId);
+            if (car != null && car.getStatus() == 1 && car.getUsable() == 0) {
+               Car car1 = carDao.queryCarById(conn,carId);
+                Record record1 = recordDao.queryNotReturnRecord(conn,userId,carId);
+                int row = 0;
+                    if (record1.getCarId() == car.getId()) {
+                        row = carDao.updateCar(conn, record1.getCarId(), 0, 1);
+                        if (row == 1) {
+                            DateFormat dft = new SimpleDateFormat("yyyy-MM-dd");
+                            String returnDate = Util.today();
+                            String startDate = record1.getStartDate();
+                            Date star = dft.parse(startDate);
+                            Date endDay = dft.parse(returnDate);
+                            long starTime = star.getTime();
+                            long endTime = endDay.getTime();
+                            long num = endTime - starTime;
+                            long day = num / 24 / 60 / 60 / 1000;
+                            double payment;
+                            double payment1;
+                            payment = day * car1.getRent();
+                            payment1=1*car1.getRent();
+                            if (day<=1){ recordDao.updateRecord(conn, record1.getId(), returnDate, payment1);}
+                            else {recordDao.updateRecord(conn, record1.getId(), returnDate, payment);}
+                            record = recordDao.queryRecordById(conn, record1.getId());
+
+                        } else {
+                            throw new Exception(String.format("carDao.updateCar failed, carId[%s]", carId));
+                        }
 
                     }
-                    else {
-                        throw new Exception(String.format("carDao.updateCar failed, carId[%s]", carId));
-                    }
-                    break;
-                }
-            }
+
             }
 
             // 提交事务
@@ -216,106 +223,97 @@ public class CarServiceImpl implements ICarService {
     @Override
     public List<Record> queryRecords(String type, String value) {
         Record record = new Record();
-        List<Record> records=null;
-        if ("1".equals(type)){
-            records=recordDao.queryRecordsByUserId(Integer.parseInt(value));
-        }
-        else if ("2".equals(type)){
-            records=recordDao.queryRecordsByCarId(record.getCarId());
-        }
-        else if ("3".equals(type)){
+        List<Record> records = null;
+        if ("1".equals(type)) {
+            records = recordDao.queryRecordsByUserId(Integer.parseInt(value));
+        } else if ("2".equals(type)) {
+            records = recordDao.queryRecordsByCarId(Integer.parseInt(value));
+        } else if ("3".equals(type)) {
             records = recordDao.queryAllRecords();
-        }else{
-            throw new UnsupportedOperationException(String.format("unsupported type [%s]",type));
+        } else {
+            throw new UnsupportedOperationException(String.format("unsupported type [%s]", type));
         }
 
         return records;
     }
+
     @Override
     public List<Record> queryRecords(String type) {
         Record record = new Record();
-        List<Record> records=null;
-        if ("1".equals(type)){
-            records=recordDao.queryRecordsByUserId(record.getUserId());
-        }
-        else if ("2".equals(type)){
-            records=recordDao.queryRecordsByCarId(record.getCarId());
-        }
-        else if ("3".equals(type)){
+        List<Record> records = null;
+        if ("1".equals(type)) {
+            records = recordDao.queryRecordsByUserId(record.getUserId());
+        } else if ("2".equals(type)) {
+            records = recordDao.queryRecordsByCarId(record.getCarId());
+        } else if ("3".equals(type)) {
             records = recordDao.queryAllRecords();
-        }else{
-            throw new UnsupportedOperationException(String.format("unsupported type [%s]",type));
+        } else {
+            throw new UnsupportedOperationException(String.format("unsupported type [%s]", type));
         }
 
         return records;
     }
+
     @Override
     public List<Category> queryAllCategories() {
 
-        List<Category> list=null;
-        list=categoryDao.queryAllCategories();
+        List<Category> list = null;
+        list = categoryDao.queryAllCategories();
         return list;
     }
 
     @Override
     public List<Brand> queryAllBrands() {
 
-        List<Brand> list =null;
-        list=brandDao.queryAllBrand();
+        List<Brand> list = null;
+        list = brandDao.queryAllBrand();
         return list;
     }
 
     @Override
     public boolean addCar(Car car) {
-       int b =carDao.addCar(car);
-       if (b!=0){
-           return true;
-       }else
-       {
-           return  false;
-       }
+
+
+        int rows = 0;
+        List<Car> list = carDao.queryCarById(car.getId());
+
+        if (list != null) {
+            rows = carDao.addCar(car);
+
+
+        }
+        if (rows == 1) {// 返回修改的记录行数为1，说明修改汽车成功
+
+            return true;
+        } else {
+            return false;
+        }
+
 
     }
 
     @Override
-    public Car updateCar(String type, String value, long carId) {
-        Connection conn = ConnectionFactory.getConnection();
-        Car car =null;
-        try {
-         if ("1".equals(type)){
-          int rows =carDao.updateCar(conn,carId,Integer.parseInt(value),0);
-          if (rows ==1 ){
-              car=carDao.queryCarById(conn,carId);
-          }else {
-              throw new Exception(String.format("carDao.updateCar failed,carId[%s]",carId));
-          }
-         }
-         else if ("2".equals(type)){
-             int rows =carDao.updateCanLendCarRentById(carId,Double.parseDouble(value));
-             if (rows==1){
-                 car=carDao.queryCarById(conn ,carId);
-             }else {
-                 throw new Exception(String.format("carDao.updateCar failed,carId[%s]",carId));
-             }
-         }else if ("3".equals(type)){
-          int rows =carDao.updateCanLendCarUsableById(carId,Integer.parseInt(value));
-          if (rows==1){
-              car=carDao.queryCarById(conn,carId);
-          }else {
-              throw new Exception(String.format("carDao.updateCar failed,carId[%s]",carId));
-          }
-         }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public boolean updateCar(String type, String value, long carId) {
 
-        } finally {
-            // 关闭连接
-            DBUtil.close(conn);
-        }
-        return car;
+        Car car = null;
+        boolean id=false;
+
+            // 一次成功的租车，涉及修改汽车表和租车记录表这两张独立的表，
+            // 所以需要启动事务来保证要么两者同时修改成功，要么两者同时不做修改（也就是失败后回滚）
+            // 启动本次连接的事务功能
+
+            // 查询当前汽车是否可租赁
+            car = carDao.queryCarById(null, carId);
+            if (car != null && car.getStatus() == 0) {
+                // 如果可以租赁，修改汽车表
+                carDao.updateCanLendCarRentById(carId, Integer.parseInt(value));
+                carDao.updateCanLendCarUsableById(carId, Integer.parseInt(type));
+                id=true;
+            }
+            // 提交事务
+
+
+        return id;
+
     }
-
-
-
-
 }

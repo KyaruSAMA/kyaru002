@@ -92,10 +92,11 @@ public class UserCarView extends Client {
                 case "1":
                     new UserRentCarView(user).RentCar(split[1]);
                 case "2":
-                    if (split[1] == "1"){
-                        showCar(new String[]{"2","1"});
-                    }else {
-                        showCar(new String[]{"2","2"});
+                    switch (split[1]){
+                        case "1":
+                            showCar(new String[]{"2","1"});
+                        case "2":
+                            showCar(new String[]{"2","2"});
                     }
                 case "3":
                     showCar(new String[]{"3",split[1]});
@@ -104,7 +105,7 @@ public class UserCarView extends Client {
                 case "5":
                     showCar(new String[]{"5"});
                 case "6":
-                   new UserRecordView(user).showRecord();
+                   new UserRecordView(user).showRecord(new String[]{"6"});
                    break;
                 case "7":
                     new  UserReturnCarView(user).ReturnCar(split[1]);
